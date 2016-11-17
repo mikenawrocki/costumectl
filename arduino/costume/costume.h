@@ -11,15 +11,17 @@
 /* PIN ASSIGNMENTS
  * NOTE: Trinket Pro pins 2 and 7 are unavailable
  */
-#define LPD8806_DATA_PIN          3
-#define LPD8806_CLOCK_PIN         4
+#define LPD8806_DATA_PIN          9
+#define LPD8806_CLOCK_PIN         10
+
+
+#define BLUEFRUIT_UART_MODE_PIN   3
+#define BLUEFRUIT_UART_CTS_PIN    4
 
 #define BLUEFRUIT_SWUART_TXD_PIN  5
 #define BLUEFRUIT_SWUART_RXD_PIN  6
 
-#define BLUEFRUIT_UART_MODE_PIN   8
-#define BLUEFRUIT_UART_CTS_PIN    9
-#define BLUEFRUIT_UART_RTS_PIN   10
+#define BLUEFRUIT_UART_RTS_PIN    8
 
 
 struct display_settings {
@@ -58,6 +60,8 @@ static inline uint16_t freq_perc_to_delay_ms(uint8_t freq_perc)
 {
     return 4096/(freq_perc+1);
 }
+
+#define BAT_POLLING_INTVL_MS 8192
 
 extern LPD8806 strip;
 extern bool reset_display;

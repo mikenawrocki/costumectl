@@ -1,4 +1,4 @@
-#include <SPI.h> // Comment out this line if using Trinket or Gemma
+//#include <SPI.h> // Comment out this line if using Trinket or Gemma
 #ifdef __AVR_ATtiny85__
 #include <avr/power.h>
 #endif
@@ -33,6 +33,16 @@ Adafruit_BluefruitLE_UART ble(bluefruitSS, BLUEFRUIT_UART_MODE_PIN,
                               BLUEFRUIT_UART_CTS_PIN, BLUEFRUIT_UART_RTS_PIN);
 
 LPD8806 strip = LPD8806(NUM_LEDS << 1, LPD8806_DATA_PIN, LPD8806_CLOCK_PIN);
+
+void show_error(void)
+{
+  for (;;) {
+    digitalWrite(13, HIGH);
+    delay(100);
+    digitalWrite(13, LOW);
+    delay(100);
+  }
+}
 
 
 int setup_bluefruit(void)
@@ -136,6 +146,7 @@ int is_ble_configured(void)
 }
 
 void setup() {
+    pinMode(13, OUTPUT);
 #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000L)
     clock_prescale_set(clock_div_1); // Enable 16 MHz on Trinket
 #endif
@@ -147,11 +158,13 @@ void setup() {
     ble.echo(false);
 
     if (!ble.begin(VERBOSE_MODE)) {
+        show_error();
         Serial.println("Failed to set BLE dev!");
     }
 
     if (!is_ble_configured) {
         if (setup_bluefruit()) {
+            show_error();
             Serial.println("Failed to configure BLE device!");
         }
     }
@@ -162,7 +175,9 @@ void setup() {
 
 void loop() {
     unsigned long to_sleep_ms;
-    unsigned long slept_ms = 0, last_ble_poll = 0, last_led_upd = 0;
+    unsigned long slept_ms = 0;
+    unsigned long last_ble_poll = 0;
+    unsigned long last_led_upd = 0;
 
     for (;;) {
 
