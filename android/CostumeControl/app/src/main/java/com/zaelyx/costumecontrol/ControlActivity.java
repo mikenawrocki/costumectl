@@ -37,7 +37,8 @@ public class ControlActivity extends AppCompatActivity {
             "Two-Color",
             "Top-Down",
             "Bottom-Up",
-            "Rainbow"
+            "Rainbow",
+            "Bi-Pride"
     );
     private String mode = modes.get(0);
     private int[] colors = {Color.RED, Color.CYAN};

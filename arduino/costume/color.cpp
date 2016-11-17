@@ -2,7 +2,7 @@
 #include "costume.h"
 
 uint32_t rainbow_colors[8] = {
-    RED, ORANGE, YELLOW, GREEN, BLUE, CYAN, VIOLET, PURPLE
+    RED, ORANGE, YELLOW, GREEN, BLUE, CYAN, MAGENTA, PURPLE
 };
 
 uint32_t convert_24bpp_rgb(uint32_t color)

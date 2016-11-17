@@ -11,7 +11,8 @@ void (*display_funcs[N_MODES])(void) = {
     display_two_color,
     display_top_down,
     display_bottom_up,
-    display_rainbow
+    display_rainbow,
+    display_bi_pride
 };
 
 
@@ -141,5 +142,26 @@ void display_rainbow(void)
     }
 
     --r_ndx;
+    strip.show();
+}
+
+void display_bi_pride(void)
+{
+    static uint8_t n_magenta = 0.375 * NUM_LEDS;
+    static uint8_t n_blue = 0.375 * NUM_LEDS;
+    static uint8_t n_purple = 0.25 * NUM_LEDS;
+
+    uint8_t px_ndx = 0;
+
+    for (uint8_t i = 0; i < n_magenta; ++i, ++px_ndx) {
+        strip.setPixelColor((px_ndx<<1) + 1, MAGENTA);
+    }
+    for (uint8_t i = 0; i < n_purple; ++i, ++px_ndx) {
+        strip.setPixelColor((px_ndx<<1) + 1, PURPLE);
+    }
+    for (uint8_t i = 0; i < n_blue; ++i, ++px_ndx) {
+        strip.setPixelColor((px_ndx<<1) + 1, BLUE);
+    }
+
     strip.show();
 }

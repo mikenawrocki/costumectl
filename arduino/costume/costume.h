@@ -43,6 +43,7 @@ enum {
     MODE_TOP_DOWN,
     MODE_BOTTOM_UP,
     MODE_RAINBOW,
+    MODE_BI_PRIDE,
 
     N_MODES /* Number of modes present */
 };
