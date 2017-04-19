@@ -13,16 +13,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Mode"
-        android:id="@+id/mode"
+        android:text="Tail"
+        android:id="@+id/tail"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/mode_select"
-        android:layout_below="@+id/mode"
+        android:id="@+id/tail_mode_select"
+        android:layout_below="@+id/tail"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -31,17 +31,18 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Frequency"
         android:id="@+id/freq"
-        android:layout_below="@+id/mode_select"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/eyes_primary_sv"
+        android:layout_alignStart="@+id/color_one_label" />
 
     <SeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/freq_bar"
-        android:layout_below="@+id/freq"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:onClick="sendMessage" />
+        android:onClick="sendMessage"
+        android:layout_below="@+id/freq"
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,15 +50,19 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Color 1"
         android:id="@+id/color_one_label"
-        android:layout_below="@+id/freq_bar"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/tail_mode_select"
+        android:layout_alignEnd="@+id/tail_primary_sv" />
 
     <SurfaceView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/color_one_sv"
+        android:id="@+id/tail_primary_sv"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/color_one_label"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentLeft="true"
+        android:minHeight="150px"
+        android:minWidth="150px"
+        android:nestedScrollingEnabled="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,22 +70,78 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Color 2"
         android:id="@+id/color_two_label"
-        android:layout_below="@+id/freq_bar"
-        android:layout_alignStart="@+id/color_two_sv" />
+        android:layout_above="@+id/tail_primary_sv"
+        android:layout_alignEnd="@+id/tail_secondary_sv" />
 
     <SurfaceView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/color_two_sv"
+        android:id="@+id/tail_secondary_sv"
         android:layout_below="@+id/color_two_label"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:minHeight="150px"
+        android:minWidth="150px" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send!"
         android:id="@+id/send_btn"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/freq_bar"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Eyes"
+        android:id="@+id/eyes"
+        android:layout_below="@+id/tail_primary_sv"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/eyes_mode_select"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/eyes"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Color 1"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/eyes_mode_select"
+        android:layout_alignParentStart="true" />
+
+    <SurfaceView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/eyes_primary_sv"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView4"
+        android:layout_alignParentLeft="true"
+        android:minHeight="150px"
+        android:minWidth="150px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Color 2"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/eyes_mode_select"
+        android:layout_alignEnd="@+id/eyes_secondary_sv" />
+
+    <SurfaceView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/eyes_secondary_sv"
+        android:layout_alignTop="@+id/eyes_primary_sv"
+        android:layout_alignEnd="@+id/send_btn"
+        android:minHeight="150px"
+        android:minWidth="150px" />
 
 </RelativeLayout>

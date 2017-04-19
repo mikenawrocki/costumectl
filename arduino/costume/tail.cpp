@@ -1,9 +1,58 @@
+#include <LPD8806.h>
+
 #include "costume.h"
-#include "color.h"
-#include "display.h"
+#include "tail.h"
+
+// Number of LEDs present (please make it a power of 2...)
+#define NUM_LEDS 8
+
+/* Predefined colors - using GRB 7 bit format */
+#define COLOR(r, g, b) ((uint32_t)(g) << 16 | \
+                        (uint32_t)(r) << 8  | \
+                        (uint32_t)(b))
+
+#define BLACK 0x0
+#define WHITE COLOR(0x7F, 0x7F, 0x7F)
+
+#define RED     COLOR(0x7F, 0x00, 0x00)
+#define GREEN   COLOR(0x00, 0x7F, 0x00)
+#define BLUE    COLOR(0x00, 0x00, 0x7F)
+
+#define CYAN    COLOR(0x00, 0x7F, 0x7F)
+#define MAGENTA COLOR(0x7F, 0x00, 0x7F)
+#define YELLOW  COLOR(0x7F, 0x7F, 0x00)
+
+#define ORANGE  COLOR(0x7F, 0x20, 0x00)
+#define PURPLE  COLOR(0x7F, 0x00, 0x45)
+
+enum {
+    MODE_OFF = 0,
+    MODE_FIXED,
+    MODE_STROBE,
+    MODE_FADE,
+    MODE_TWO_COLOR,
+    MODE_TOP_DOWN,
+    MODE_BOTTOM_UP,
+    MODE_RAINBOW,
+    MODE_BI_PRIDE,
+
+    N_MODES /* Number of modes present */
+};
+
+
+static int is_color_valid(uint32_t color);
+static void display_off(void);
+static void display_fixed(void);
+static void display_strobe(void);
+static void display_fade(void);
+static void display_two_color(void);
+static void display_top_down(void);
+static void display_bottom_up(void);
+static void display_rainbow(void);
+static void display_bi_pride(void);
 
 /* Display function to use */
-void (*display_funcs[N_MODES])(void) = {
+static void (*display_funcs[N_MODES])(void) = {
     display_off,
     display_fixed,
     display_strobe,
@@ -15,6 +64,17 @@ void (*display_funcs[N_MODES])(void) = {
     display_bi_pride
 };
 
+static uint32_t rainbow_colors[8] = {
+    RED, ORANGE, YELLOW, GREEN, BLUE, CYAN, MAGENTA, PURPLE
+};
+
+LPD8806 strip = LPD8806(NUM_LEDS << 1, LPD8806_DATA_PIN, LPD8806_CLOCK_PIN);
+
+
+static int is_color_valid(uint32_t color)
+{
+    return !(color & 0xFF808080);
+}
 
 static void _display_color(uint32_t color)
 {
@@ -29,17 +89,17 @@ static void display_clear(void)
     _display_color(BLACK);
 }
 
-void display_off(void)
+static void display_off(void)
 {
     display_clear();
 }
 
-void display_fixed(void)
+static void display_fixed(void)
 {
-    _display_color(display.primary_color);
+    _display_color(display.tail.primary_color);
 }
 
-void display_strobe(void)
+static void display_strobe(void)
 {
     static uint8_t i = 0;
     if (i++ & 1) {
@@ -106,34 +166,35 @@ static void _display_wipe(int dir)
 
     uint8_t display_pixel = (dir) ? ndx : (NUM_LEDS - ndx -1);
 
-    strip.setPixelColor((display_pixel << 1) + 1, display.primary_color);
+    strip.setPixelColor((display_pixel << 1) + 1, display.tail.primary_color);
     strip.show();
     strip.setPixelColor((display_pixel << 1) + 1, BLACK);
     ndx = (ndx + 1) & (NUM_LEDS - 1);
 }
 
-void display_fade(void)
+static void display_fade(void)
 {
-    _display_two_color(display.primary_color, BLACK);
+    _display_two_color(display.tail.primary_color, BLACK);
 }
 
 
-void display_two_color(void)
+static void display_two_color(void)
 {
-    _display_two_color(display.primary_color, display.secondary_color);
+    _display_two_color(display.tail.primary_color,
+                       display.tail.secondary_color);
 }
 
-void display_top_down(void)
+static void display_top_down(void)
 {
     _display_wipe(1);
 }
 
-void display_bottom_up(void)
+static void display_bottom_up(void)
 {
     _display_wipe(0);
 }
 
-void display_rainbow(void)
+static void display_rainbow(void)
 {
     static uint8_t r_ndx = 0;
 
@@ -145,7 +206,7 @@ void display_rainbow(void)
     strip.show();
 }
 
-void display_bi_pride(void)
+static void display_bi_pride(void)
 {
     static uint8_t n_magenta = 0.375 * NUM_LEDS;
     static uint8_t n_blue = 0.375 * NUM_LEDS;
@@ -164,4 +225,45 @@ void display_bi_pride(void)
     }
 
     strip.show();
+}
+
+
+int validate_tail(struct component_config *tail)
+{
+    if (tail->magic != 0x7f7f) {
+        return 0;
+    }
+    if (tail->mode >= N_MODES) {
+        return 0;
+    }
+    if (!is_color_valid(tail->primary_color)) {
+        return 0;
+    }
+    if (!is_color_valid(tail->secondary_color)) {
+        return 0;
+    }
+
+    return 1;
+}
+
+void init_tail(void)
+{
+    struct component_config *tail = &display.tail;
+
+
+    
+    tail->mode = MODE_FIXED;
+    tail->primary_color = RED;
+    tail->secondary_color = CYAN;
+
+    // Start up the LED strip
+    strip = LPD8806(NUM_LEDS << 1, LPD8806_DATA_PIN, LPD8806_CLOCK_PIN);
+    strip.begin();
+    display_clear();
+    strip.show();
+}
+
+void display_tail(void)
+{
+    display_funcs[display.tail.mode]();
 }
